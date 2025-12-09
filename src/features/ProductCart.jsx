@@ -54,7 +54,7 @@ function ProductCart() {
   };
 
   return (
-    <div className="max-w-fit lg:max-w-[70%] min-h-screen grid lg:grid-cols-3 rounded-md grid-cols-2 gap-6 bg-gray-300 p-6">
+    <div className="max-w-fit lg:max-w-[70%] min-h-screen  grid lg:grid-cols-3 rounded-md grid-cols-1 gap-6 bg-gray-300 p-6">
       {data.map((item, index) => {
         // ✅ CHANGE 7: Now checks Redux store instead of local state
         const showCartButton = !isInCart(item.name);
