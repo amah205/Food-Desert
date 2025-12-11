@@ -1,21 +1,17 @@
 import { useDispatch, useSelector } from "react-redux";
 
-import LevelUpButton from "../ui/LevelUpButton";
-import CartButton from "../ui/CartButton";
-import data from "../assets/data.json";
+import LevelUpButton from "../../ui/LevelUpButton";
+import CartButton from "../../ui/CartButton";
+import data from "../../assets/data.json";
 import { addToCart, decrementQuantity, incrementQuantity } from "./CartSlice";
+import CartPage from "./CartPage";
 
-// Import images - adjust path based on your structure
-const getImagePath = (relativePath) => {
-  // Remove the "./" from the path
-  const cleanPath = relativePath.replace("./", "");
-  // Return the full path from src/assets
-  return new URL(`../assets/${cleanPath}`, import.meta.url).href;
-};
+const getImagePath = (relativePath) =>
+  new URL(`../../${relativePath.replace("./", "")}`, import.meta.url).href;
 
-function ProductCart() {
-  // ✅ CHANGE 1: Removed useState for buttonStates
-  // const [buttonStates, setButtonStates] = useState({}); // DELETED
+function ProductCart({ onOpenCart }) {
+  // calling isAuthentic from AuthSlice
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
@@ -34,12 +30,17 @@ function ProductCart() {
   // ✅ CHANGE 4: Simplified - removed index parameter and local state update
   const handleCartClick = (item) => {
     // Removed setButtonStates code
+    if (!isAuthenticated) {
+      alert("Please sign in to add items to your cart.");
+      return;
+    }
     dispatch(
       addToCart({
         name: item.name,
         price: item.price,
       })
     );
+    onOpenCart();
   };
 
   // ✅ CHANGE 5: Kept this function the same
@@ -54,12 +55,12 @@ function ProductCart() {
   };
 
   return (
-    <div className="max-w-fit lg:max-w-[70%] min-h-screen  grid lg:grid-cols-3 rounded-md grid-cols-1 gap-6 bg-gray-300 p-6">
+    <div className="max-w-fit relative top-11 min-h-screen  grid lg:grid-cols-3 rounded-md grid-cols-1 gap-6 bg-gray-300 p-6">
       {data.map((item, index) => {
         // ✅ CHANGE 7: Now checks Redux store instead of local state
         const showCartButton = !isInCart(item.name);
         const quantity = getQuantity(item.name);
-        // console.log(item);
+        console.log(item);
         return (
           <div key={index}>
             {/* ... image and other code ... */}
@@ -70,12 +71,8 @@ function ProductCart() {
                 }`}
                 src={getImagePath(item.image.desktop)}
                 alt={item.name}
-                onError={(e) => {
-                  console.log("Failed to load:", item.image.desktop);
-                  e.target.src =
-                    "https://via.placeholder.com/300x200?text=Image+Not+Found";
-                }}
               />
+
               <div className="absolute bottom-0 left-0 right-0 flex justify-center -mb-5">
                 {showCartButton ? (
                   <CartButton
