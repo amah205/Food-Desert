@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { User, Menu, X, LogOut, ShoppingCart } from "lucide-react";
 import { logout } from "../auth/AuthSlice";
@@ -10,9 +10,41 @@ function Header({ onOpenAuth, onOpenCart }) {
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // reference to mobile menu
+  const menuRef = useRef(null);
+
   const handleLogout = () => {
     dispatch(logout());
   };
+
+  // CLOSE MENU WHEN SCROLLING
+  // --------------------------------------------
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const handleScroll = () => setMobileMenuOpen(false);
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [mobileMenuOpen]);
+
+  // CLOSE MENU WHEN CLICKING OUTSIDE
+  // --------------------------------------------
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const handleClickOutside = (e) => {
+      // If click is outside menu area
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [mobileMenuOpen]);
 
   return (
     <header className="bg-white shadow-sm  top-0 z-40 fixed left-0 right-0 gap-8 ">
@@ -83,30 +115,105 @@ function Header({ onOpenAuth, onOpenCart }) {
               </button>
             )}
 
-            <button
+            {/* MOBILE MENU TOGGLE + DROPDOWN */}
+            <div className="relative md:hidden mt-4 pb-4  " ref={menuRef}>
+              {/* THIS BUTTON MUST BE INSIDE menuRef */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation(); // Prevents triggering outside-click
+                  setMobileMenuOpen((prev) => !prev);
+                }}
+                className="text-gray-700 "
+              >
+                {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+
+              {mobileMenuOpen && (
+                <div className=" fixed top-[80px]  left-0 right-0 w-full  z-50  p-6 bg-white shadow-lg border-t ">
+                  <nav className="flex flex-col space-y-3 items-start ">
+                    <button
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="text-gray-700"
+                    >
+                      Home
+                    </button>
+                    <button
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="text-gray-700"
+                    >
+                      Products
+                    </button>
+                    <button
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="text-gray-700"
+                    >
+                      About
+                    </button>
+                    <button
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="text-gray-700"
+                    >
+                      Contact
+                    </button>
+
+                    {isAuthenticated && (
+                      <button
+                        className="text-red-500"
+                        onClick={() => {
+                          handleLogout();
+                          setMobileMenuOpen(false);
+                        }}
+                      >
+                        Logout
+                      </button>
+                    )}
+                  </nav>
+                </div>
+              )}
+            </div>
+
+            {/* <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="md:hidden text-gray-700"
             >
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+            </button> */}
           </div>
         </div>
 
-        {mobileMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 border-t pt-4">
+        {/* {mobileMenuOpen && (
+          <div ref={menuRef} className="md:hidden mt-4 pb-4 border-t pt-4">
             <nav className="flex flex-col space-y-3">
-              <a href="#" className="text-gray-700 hover:text-orange-500">
+              <button
+                // onClick={(e) => e.preventDefault()}
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-gray-700 hover:text-orange-500"
+              >
                 Home
-              </a>
-              <a href="#" className="text-gray-700 hover:text-orange-500">
+              </button>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                // onClick={(e) => e.preventDefault()}
+                className="text-gray-700 hover:text-orange-500"
+              >
                 Products
-              </a>
-              <a href="#" className="text-gray-700 hover:text-orange-500">
+              </button>
+              <button
+                // onClick={(e) => e.preventDefault()}
+
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-gray-700 hover:text-orange-500"
+              >
                 About
-              </a>
-              <a href="#" className="text-gray-700 hover:text-orange-500">
+              </button>
+              <button
+                // onClick={(e) => e.preventDefault()}
+
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-gray-700 hover:text-orange-500"
+              >
                 Contact
-              </a>
+              </button>
               {isAuthenticated && (
                 <button
                   onClick={handleLogout}
@@ -117,7 +224,7 @@ function Header({ onOpenAuth, onOpenCart }) {
               )}
             </nav>
           </div>
-        )}
+        )}*/}
       </div>
     </header>
   );
