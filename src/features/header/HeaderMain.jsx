@@ -52,32 +52,6 @@ function Header({ onOpenAuth, onOpenCart }) {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-8">
             <h1 className="text-2xl font-bold text-orange-500"> Desserts</h1>
-            {/* <nav className="hidden md:flex space-x-6">
-              <a
-                href="#"
-                className="text-gray-700 hover:text-orange-500 transition"
-              >
-                Home
-              </a>
-              <a
-                href="#"
-                className="text-gray-700 hover:text-orange-500 transition"
-              >
-                Products
-              </a>
-              <a
-                href="#"
-                className="text-gray-700 hover:text-orange-500 transition"
-              >
-                About
-              </a>
-              <a
-                href="#"
-                className="text-gray-700 hover:text-orange-500 transition"
-              >
-                Contact
-              </a>
-            </nav> */}
           </div>
 
           <div className="flex items-center space-x-4">
@@ -172,59 +146,11 @@ function Header({ onOpenAuth, onOpenCart }) {
               )}
             </div>
 
-            {/* <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden text-gray-700"
-            >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button> */}
+           
           </div>
         </div>
 
-        {/* {mobileMenuOpen && (
-          <div ref={menuRef} className="md:hidden mt-4 pb-4 border-t pt-4">
-            <nav className="flex flex-col space-y-3">
-              <button
-                // onClick={(e) => e.preventDefault()}
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-gray-700 hover:text-orange-500"
-              >
-                Home
-              </button>
-              <button
-                onClick={() => setMobileMenuOpen(false)}
-                // onClick={(e) => e.preventDefault()}
-                className="text-gray-700 hover:text-orange-500"
-              >
-                Products
-              </button>
-              <button
-                // onClick={(e) => e.preventDefault()}
-
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-gray-700 hover:text-orange-500"
-              >
-                About
-              </button>
-              <button
-                // onClick={(e) => e.preventDefault()}
-
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-gray-700 hover:text-orange-500"
-              >
-                Contact
-              </button>
-              {isAuthenticated && (
-                <button
-                  onClick={handleLogout}
-                  className="text-left text-red-500"
-                >
-                  Logout
-                </button>
-              )}
-            </nav>
-          </div>
-        )}*/}
+       
       </div>
     </header>
   );
